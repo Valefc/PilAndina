@@ -1,0 +1,11 @@
+numpy
+matplotlib
+scikit-learn
+pandas
+streamlit
+plotly-express
+colormap
+graphviz
+seaborn
+xgboost
+openpyxl
