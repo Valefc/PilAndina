@@ -86,12 +86,17 @@ filtered_df=filtered_df[filtered_df["nombre_competencia"].isin(competencia)] if 
 col_a,col_b=st.columns((2))
 with col_a:
     ingresos_totales=filtered_df["precio"].mean()
-    st.metric("Media Precio productos PIL",f"Bs.{ingresos_totales:,.2f}")
+    st.metric("Media Compras (BS) de Productos Pil",f"Bs.{ingresos_totales:,.2f}")
 with col_b:
-    producto_df=filtered_df.groupby("nombre_categoria", as_index=False)["cantidad_comprada"].sum()
-    producto_df=producto_df.sort_values(by="cantidad_comprada",ascending=False)
-    producto_mas_vendido=producto_df.iloc[0]
-    st.metric(f"Producto Más Vendido:{producto_mas_vendido}",f"Unids: {producto_df["cantidad_comprada"]}")
+    producto_df = filtered_df.groupby("nombre_categoria", as_index=False)["cantidad_comprada"].sum()
+    producto_df = producto_df.sort_values(by="cantidad_comprada", ascending=False)
+    producto_mas_vendido = producto_df.iloc[0]
+    nombre_producto = producto_mas_vendido["nombre_categoria"]
+    cantidad_producto = producto_mas_vendido["cantidad_comprada"]
+
+    st.metric(
+        f"Producto Más Vendido: {nombre_producto}",
+        f"Unids: {cantidad_producto:,.2f}")
 
 categoria_df=filtered_df.groupby(by=["nombre_categoria"], as_index=False)["precio"].sum()
 

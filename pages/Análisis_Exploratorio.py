@@ -5,7 +5,7 @@ import plotly.express as px
 from wordcloud import WordCloud
 import seaborn as sns
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide",page_icon="🔎")
 
 # Cambiar el fondo del dashboard a naranja
 st.markdown(
@@ -52,7 +52,7 @@ st.markdown(
 
 df = pd.read_excel("df/BASE DE DATOS LECHE final oficial.xlsx", header = 0)
 
-st.title("🔎Análisis Exploratorio de Datos Pil Andina S.A. 🥛")
+st.title("Análisis Exploratorio de Datos Pil Andina S.A. 🥛")
 
 col1,col2 =st.columns((2))
 with col1:
@@ -111,14 +111,36 @@ plt.axis('off')
 st.pyplot(plt)
 
 st.subheader(f"📊 Gráfico de Barras {select_variable} por Producto")
+
+# Agrupar los datos
 df_barras = df.groupby('nombre_categoria')[select_variable].mean()
 
+# Mostrar los datos agrupados en un expander
 with st.expander(f"Datos Agrupados por {select_variable}"):
     st.write(df_barras)
 
-fig, ax = plt.subplots()
+# Crear una paleta de colores única para las categorías
+unique_categories = df_barras.index
+palette = sns.color_palette("husl", len(unique_categories))  # Paleta de colores distintos
+colors = dict(zip(unique_categories, palette))  # Mapear colores a categorías
+
+# Crear la figura y el gráfico de barras
 fig, ax = plt.subplots(figsize=(8, 4))
-df_barras.plot(kind='bar', color='cornflowerblue') 
+
+# Usar colores personalizados para las barras
+df_barras.plot(
+    kind='bar',
+    color=[colors[cat] for cat in df_barras.index],
+    ax=ax
+)
+
+# Etiquetas y formato
+ax.set_title(f"{select_variable} por Producto", fontsize=14)
+ax.set_xlabel("Nombre Categoría", fontsize=12)
+ax.set_ylabel(f"{select_variable}", fontsize=12)
+ax.set_xticklabels(df_barras.index, rotation=45, ha='right')
+
+# Mostrar la gráfica en Streamlit
 st.pyplot(fig)
 
 # Crear un diccionario para convertir números de mes a nombres de mes
